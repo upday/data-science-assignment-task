@@ -11,7 +11,11 @@ Evaluation the model:
 Aforementioned assumptions
 ```python3 text_classification.py test_predictions ./data/df_test.tsv```
 
-Pickled models could not be commited to github, you will have to train the model(shouldn't take long)
+Predicting categories for unseen data:
+(Replace df_test with target file w/o categories)
+```python3 text_classification.py test_predictions ./data/df_test.tsv```
+
+Pickled models could not be commited to github, you will have to train the model again(shouldn't take long)
 
 ---
 

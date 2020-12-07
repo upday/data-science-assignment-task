@@ -71,5 +71,17 @@ def test_predictions(data_source: str):
     y = pipeline.predict(df_test)
     print("Report:\n" ,(classification_report(y, df_test.category)))
 
+
+def predict_unseen(data_source: str):
+    df_test = pd.read_csv(data_source, sep="\t", error_bad_lines = False, encoding = "utf-8")
+    if df_test.empty:
+        return('Aborting')
+    pipeline = joblib.load('./models/xgboost_all.pkl')
+    df_test['predicted_category'] = pipeline.predict(df_test)
+    df_test.to_csv(data_source, sep="\t", mode="w", index=False)
+    print("Predictions written to the file")
+    return
+
+
 if __name__ == '__main__':
     globals()[sys.argv[1]](sys.argv[2])

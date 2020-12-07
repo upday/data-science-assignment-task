@@ -1,21 +1,55 @@
 # Solution
 
-The notebook detailing the solution: classification.ipynb
+The notebook detailing the solution can be found here: classification.ipynb<br>
+The task is a simple classification task with small tabular data, hence most of the sophisticated neural net approaches(BERT, W2V) are an overkill. Logistic Regression worked best for this task. It was evaluated against some other approaches like XGBoost(,and decision trees, Random Forests), MLP. 
+<br>
+
+Evaluation metrics were of the order:
+```
+LogReg(text+title+url):
+Report:
+                           precision    recall  f1-score   support
+
+             cars_motors       0.92      0.89      0.91        38
+                 culture       0.92      0.92      0.92        50
+            digital_life       0.90      0.90      0.90        78
+fashion_beauty_lifestyle       0.94      0.94      0.94       125
+          money_business       0.79      0.86      0.82        43
+                   music       0.97      0.97      0.97        40
+                    news       0.91      0.83      0.87        52
+            people_shows       0.83      0.75      0.79        32
+                politics       0.90      1.00      0.95        26
+                  sports       0.98      0.96      0.97        91
+      technology_science       0.92      0.93      0.93        74
+                  travel       0.92      1.00      0.96        44
+
+                accuracy                           0.92       693
+               macro avg       0.91      0.91      0.91       693
+            weighted avg       0.92      0.92      0.92       693
+```
 ~A report about the data can be found at ./data/basic_analysis.html~ On second thoughts, the report can be generated through the script in the notebook and is not committed to github.
 
+
 ## Training the model:
-Assuming a TSV in ./data/ named df_train (can also be generated using the nb), or any other data file in the right format. <br>
+Assuming a TSV in ./data/ named df_train.tsv (Note: df_train is a stratified subset of the entire available data, the notebook has code to do so). <br>
 ```python3 text_classification.py train_model ./data/df_train.tsv```   
 
+Pickled models could not be commited to github, you will have to train the model again(shouldn't take long)<br>
+Training one of the available models: <br>
+1. [Here](https://github.com/varunchitale/data-science-assignment-task/blob/f4e4c8b3619c1f5d8d718cc594184f33ff3e8415/text_classification.py#L51) are 5 potential models used for classification. In case of retraining, comment out all except one.
+2. Run the command for training the model as described above.
+
+
 ## Evaluating the model:  
-Aforementioned assumptions.<br> 
+Aforementioned assumptions for a test dataset, let's call it df_test.<br> 
 ```python3 text_classification.py test_predictions ./data/df_test.tsv```
 
 ## Predicting categories for unseen data:  
-(Replace df_test with target file w/o categories). <br>
-```python3 text_classification.py test_predictions ./data/df_test.tsv```
-  
-Pickled models could not be commited to github, you will have to train the model again(shouldn't take long)
+df_unseen is w/o categories. <br>
+```python3 text_classification.py test_predictions ./data/df_unseen.tsv```
+
+
+
 
 ---
 

@@ -1,3 +1,18 @@
+# Solution
+
+The notebook detailing the solution: classification.ipynb
+A report about the data can be found at ./data/basic_analysis.html
+
+Training the model:
+Assuming a TSV in ./data/ named df_train (can also be generated using the nb), or any other data file in the right format
+```python3 text_classification.py train_model ./data/df_train.tsv``` 
+
+Evaluation the model:
+Aforementioned assumptions
+```python3 text_classification.py test_predictions ./data/df_test.tsv```
+
+---
+
 # Assignment Task for Data Scientists
 
 ## Introduction

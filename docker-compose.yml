@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  notebook:
+    container_name: python_notebook
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/app
+    ports:
+      - "8888:8888"
+    working_dir: /var/app

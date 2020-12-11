@@ -39,4 +39,3 @@ Scripts to be run from the command line:
 * A script for training the dataset
 * A script for evaluating the dataset
 * A script to infer the category given an article
-

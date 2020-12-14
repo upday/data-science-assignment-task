@@ -20,7 +20,6 @@ def predict(dataset):
     dval = xgboost.DMatrix(X_test_xg.tocsr())
     bst = me.get_xgboost()
     pred_labels = bst.predict(dval)
-    print(type(pred_labels))
     pred_cat=get_categories(pred_labels)
     for i in range(len(pred_cat)):
         print(f"title: {dt.iat[i, 0]} - predicted category: {pred_cat[i]}")

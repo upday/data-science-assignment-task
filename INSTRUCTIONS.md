@@ -4,7 +4,8 @@
 
 ## Instructions
 1. run `make train` to train the model (or if it doesn't work, `docker-compose run --rm notebook /bin/bash -c "python3 xgboost_train.py"`)
-2. run `make evaluate DATASET="<path of your dataset>"` to evaluate the model (alternatively `docker-compose run --rm notebook /bin/bash -c "python3 model_evaluate.py '<path of your dataset>'"`). Replace [path of your dataset] with your dataset path (NOTE: must be the same format as the one provided)
+2. run `make evaluate DATASET="[path of your dataset]"` to evaluate the model (alternatively `docker-compose run --rm notebook /bin/bash -c "python3 model_evaluate.py '[path of your dataset]'"`). Replace [path of your dataset] with your dataset path (NOTE: must be the same format as the provided file)
+3. run `make predict DATASET="[path of your dataset]"` to print predictions from the target dataset (alternatively `docker-compose run --rm notebook /bin/bash -c "python3 model_predict.py '[path of your dataset]'"`).) Replace [path of your dataset] with your dataset path (NOTE: must be the same format as the provided file)
 
 To explore and modify the jupyter notebook where I explore and compare different models:
 1. `docker-compose up`

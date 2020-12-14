@@ -4,4 +4,7 @@ train:
 evaluate:
 	docker-compose run --rm notebook /bin/bash -c "python3 model_evaluate.py $(DATASET)"
 
-.PHONY: train
+predict:
+	docker-compose run --rm notebook /bin/bash -c "python3 model_predict.py $(DATASET)"
+
+.PHONY: train evaluate predict

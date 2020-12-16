@@ -7,7 +7,6 @@ from functools import partial
 from urllib.parse import urlparse
 
 
-
 from textclf.preprocessing.traditional_text_preprocessing import (
     traditional_text_preprocessing,
 )

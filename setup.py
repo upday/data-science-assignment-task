@@ -7,8 +7,8 @@ from setuptools.command.install import install as Install
 
 def models_installation():
     import spacy.cli.download as download
-    download("en_core_web_md")  # medium
 
+    download("en_core_web_md")  # medium
 
 
 class CustomInstall(Install):

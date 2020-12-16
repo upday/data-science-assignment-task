@@ -9,11 +9,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
 
-
-
-
-
-
 def deal_with_stratification(df, list_cols_y, thr, option="duplicate", n=4):
     """[take as input a DataFrame and a target column and decide how to deal with low represented classes:
         depending on the value of 'option' you can either get rid of them or duplicate them.

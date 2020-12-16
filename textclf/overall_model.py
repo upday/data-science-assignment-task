@@ -4,7 +4,6 @@ import pandas as pd
 import scipy.stats as stats
 
 from textclf.preprocessing.preprocessing_unit import Preprocesser
-from textclf.utils.dataset_split import create_datasets_train_test_raw
 from textclf.trainer.trainer import Trainer
 
 from textclf.utils.report_performance import report_performance

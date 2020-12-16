@@ -2,10 +2,7 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-from textclf import PATH_PREPROCESSER, PATH_ML_MODEL
-from textclf import DATA_DIR, MODELS_DIR
-from textclf import PATH_DATA_INPUT, PATH_DATA_TRAIN_RAW, PATH_DATA_TEST_RAW
-from textclf import PATH_DATA_TRAIN_PROCESSED, PATH_DATA_TEST_PROCESSED
+from textclf import PATH_DATA_INPUT
 
 import logging
 

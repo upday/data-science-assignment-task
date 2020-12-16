@@ -3,7 +3,6 @@ import spacy
 
 
 from textclf.preprocessing.traditional_text_preprocessing import _truncate
-from textclf.utils.parallel_functions import parallelize_on_rows
 from textclf.utils.get_nlp_models import get_spacy_model
 
 import logging

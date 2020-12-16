@@ -6,8 +6,6 @@ import pickle
 from functools import partial
 from urllib.parse import urlparse
 
-import spacy
-from sentence_transformers import SentenceTransformer
 
 
 from textclf.preprocessing.traditional_text_preprocessing import (

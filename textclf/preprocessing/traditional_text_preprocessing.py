@@ -1,17 +1,13 @@
 import string
-import spacy
 import pandas as pd
-import numpy as np
 from functools import partial
 
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from collections import Counter
 
 from textclf.utils.get_nlp_models import get_spacy_model
 
-from textclf.utils.parallel_functions import parallelize_on_rows
 
 import logging
 

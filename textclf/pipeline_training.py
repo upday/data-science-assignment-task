@@ -1,17 +1,10 @@
-import lightgbm as lgb
 import pandas as pd
 import pickle
 
-import scipy.stats as stats
-from sklearn.model_selection import train_test_split
 
-from textclf import PATH_PREPROCESSER, PATH_ML_MODEL, PATH_OVERALL_MODEL
-from textclf import DATA_DIR, MODELS_DIR
-from textclf import PATH_DATA_INPUT, PATH_DATA_TRAIN_RAW, PATH_DATA_TEST_RAW
-from textclf import PATH_DATA_TRAIN_PROCESSED, PATH_DATA_TEST_PROCESSED
+from textclf import PATH_OVERALL_MODEL
+from textclf import PATH_DATA_TRAIN_RAW
 
-from textclf.preprocessing.preprocessing_unit import Preprocesser
-from textclf.trainer.trainer import Trainer
 from textclf.overall_model import ComplexModel
 
 import argparse

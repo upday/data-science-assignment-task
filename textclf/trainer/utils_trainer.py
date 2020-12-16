@@ -1,40 +1,16 @@
-import numpy as np
 import pandas as pd
 
 import scipy.stats as stats
-from sklearn.utils.fixes import loguniform
 
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
-from sklearn.datasets import load_wine
 from sklearn.ensemble import StackingClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import make_scorer
-from sklearn.model_selection import train_test_split
 
-from sklearn.ensemble import VotingClassifier
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.svm import NuSVC, SVC
-from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.naive_bayes import MultinomialNB
 
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-from sklearn.decomposition import PCA
 
-from sklearn.preprocessing import StandardScaler
-from sklearn.compose import make_column_selector
-import sklearn
 
 
 

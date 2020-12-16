@@ -1,6 +1,5 @@
 import pandas as pd
 from sentence_transformers import SentenceTransformer
-from functools import partial
 
 from textclf.preprocessing.traditional_text_preprocessing import _truncate
 from textclf.utils.get_nlp_models import get_bert_model

@@ -1,6 +1,5 @@
 import lightgbm as lgb
 import pandas as pd
-import pickle
 
 import scipy.stats as stats
 

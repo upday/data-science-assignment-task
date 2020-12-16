@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from time import time
 import scipy.stats as stats
 from sklearn.utils.fixes import loguniform
 
@@ -37,8 +36,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.compose import make_column_selector
 import sklearn
 
-from tempfile import mkdtemp
-from shutil import rmtree
 
 
 def deal_with_stratification(df, list_cols_y, thr, option="duplicate", n=4):

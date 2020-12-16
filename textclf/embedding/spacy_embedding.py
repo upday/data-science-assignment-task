@@ -1,6 +1,5 @@
 import pandas as pd
 import spacy
-from functools import partial
 
 
 from textclf.preprocessing.traditional_text_preprocessing import _truncate

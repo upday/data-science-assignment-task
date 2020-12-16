@@ -1,7 +1,4 @@
 import string
-import pickle
-import re
-import os
 import spacy
 import pandas as pd
 import numpy as np

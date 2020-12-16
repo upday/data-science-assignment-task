@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from time import time
 import scipy.stats as stats
 from sklearn.utils.fixes import loguniform
 

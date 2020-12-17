@@ -37,7 +37,7 @@ How to present the documentation and the code is up to you, whether to provide p
 
 ## Bonus
 
-Show off your engineering skills. What steps would you take to productionize this model? 
+Show off your engineering skills. What steps would you take to productionize the model? 
 
 We have listed some ideas below, but we would love to see the steps you would take. 
 * Wrap your model into an API and document your instructions on how to test it

@@ -1,0 +1,18 @@
+FROM python:3.7.3
+
+MAINTAINER Hai-Nguyen DINH <dhnguyenit@gmail.com>
+
+WORKDIR /app
+
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+RUN pip install pipenv && \
+    rm -rf /root/.cache/pip/*
+
+# Install dependencies first via pipenv
+COPY Pipfile Pipfile.lock /app/
+COPY ClassificationAnalysis.ipynb /app/
+
+RUN pipenv sync -d --clear
+
+CMD ["pipenv", "run", "jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]

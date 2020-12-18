@@ -1,0 +1,11 @@
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Python
+**/__pycache__/
+*.egg-info/
+*.pyc
+
+# Data and models folder
+data/
+model_file/

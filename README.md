@@ -1,45 +1,113 @@
-# Assignment Task for Data Scientists
+# Upday Task for Data Scientists
 
 ## Introduction
-You are a Data Scientist working at upday, a news aggregator and recommender.
 
-The engineering team at upday is gathering on a regular basis articles from all the Web. In order to provide a proper filtering functionality in the app, the articles need to be categorized.
+The repo contains the analysis notebook, scripts for training, testing models, API server wrapper for the model, Docker file to run notebooks and API. All of my data analysis and model training/evaluation is in the notebooks. The readme will help you run the scripts as smoothly aspossible.
 
-You have at your disposal a pre-labelled dataset that maps different articles and their metadata to a specific category.
+## Prerequisites
 
-It's up to you now to help the company providing a solution for automatically categorizing articles.
+You need to have python3 running on your system and install pipenv
 
-## Assignment
+```
+pip3 install pipenv
+```
 
-The repository contains a dataset with some english articles and some information about them:
+## Notebooks
 
-* category
-* title
-* text
-* url
+There are two ways to run notebooks:
 
-The purpose of the task is to provide a classification model for the articles.
+### Directly
 
-## Instructions
+Install required developement dependencies
+```
+pipenv sync -d --clear
+```
+Run the notebook
+```
+jupyter notebook
+```
+Remember to copy the data file url and password to notebook before running.
 
-You should make a pull request to this repository containing the solution. If you need to clarify any point of your solution, please include an explanation in the PR description.
+### Docker
 
-What we expect:
+You need to have docker installed. Build the container and run it with the command
+```
+docker build -f Dockerfile.notebook -t notebook:0.1 .
+docker run -p 8888:8888 notebook:0.1
+```
+You can access notebook server from localhost:8888
 
-* Results from your data exploration and an explanation about the solution you adopted.
-* Documentation of the results of your model, including the choice of model(s), metrics adopted and the final evaluation.
-* The training and evaluation code, ideally as separate scripts.
+## Model Training and Evaluation Scripts
 
-The solution should just perform better than random, also we expect you to use a model that is not just rules-based.
+To run the scripts, you need to install required dependencies
+```
+pipenv sync -d --clear
+```
+All the configuration, path, variable as well as url and password to data file is stored `config\application.yaml` file. You can leave the default parameters, except data zipfile url and password.
 
-How to present the documentation and the code is up to you, whether to provide python scripts, jupyter notebooks or via a different mean. 
+### Download and unzip data file
+This will download the zipfile and unzip to the default location defined in application.yaml. Make sure you have correct url and password in the yaml file.
+```
+pipenv run python model/download_data.py
+pipenv run python model/download_data.py --url <url-of-data> --password <password>
+```
+### Split to train and test dataset
+The script will read the whole dataset and do a stratified split into train and test dataset. The parameters can be set in application.yaml files or passed as parameters
+```
+pipenv run python model/split_train_test.py
+pipenv run python model/split_train_test.py --input <path-to-input-file> --train <path-to-output-train-dataset> -test <path-to-output-test-dataset> --size <test-size>
+```
+### Train model
+The script will train a fasttext model based on train dataset. By default it will use the whole data file, you can specify it to use a another file instead (after splitting for example)
+```
+pipenv run python model/train_model.py
+pipenv run python model/train_model.py --input <path-to-train-file> --output <path-to-model-file>
+```
+### Evaluate
+The script loads the model and calculates the Precision, Recall and F1 Score based on a test dataset. Please make sure to provide the correct path to test dataset or it will use the default location for splitted test dataset.
+```
+pipenv run python model/evaluate_model.py --test <path-to-dataset>
+```
+### Predict 
+The script loads the model and will try to predict the category of an article you provided. You need to input the article url, title and text.
+```
+pipenv run python model/predict_model.py --url "http://ww.edheu.cd" --title "new life in health and style" --text "health and style are very important"
+```
 
+## API Wrapper
+The API is created by FastAPI library and provide very basic endpoint for other services. FastAPI has good performance and support async requests.
 
-## Bonus
+### Preparation
+Please note that you need to train a model before running the API. Put the data url and password inside application.yaml then run following commands
+```
+pipenv sync --clear
+pipenv run python model/download_data.py
+pipenv run python model/train_model.py
+```
+### Run API server
+To run the API:
 
-Show off your engineering skills. What steps would you take to productionize the model? 
+```
+pipenv run python server/main.py
+```
 
-We have listed some ideas below, but we would love to see the steps you would take. 
-* Wrap your model into an API and document your instructions on how to test it
-* Or.. Create a Docker image (or surprise us!) that can be used to run your code
-* Or.. Include some unit tests in your training code
+Or docker
+
+```
+docker build -f Dockerfile.api -t api:0.1 .
+docker run -p 8080:8080 api:0.1
+```
+### How To Use
+You can see a simple Swagger docs for the API at `http://0.0.0.0:8080/docs`
+The API has one endpoint `/predict_label` accepting JSON request with article information. Here is one example request
+```
+curl --header "Content-Type: application/json" --data '{
+    "url": "www.test.com",
+    "title": "new life in health and style",
+    "text": "health and style are very important"}
+' http://0.0.0.0:8080/predict_label
+```
+Response
+```
+{"label":"fashion_beauty_lifestyle","probability":1.0000100135803223}
+```

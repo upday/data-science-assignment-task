@@ -1,0 +1,21 @@
+FROM python:3.7.3
+
+MAINTAINER Hai-Nguyen DINH <dhnguyenit@gmail.com>
+
+WORKDIR /app
+
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+RUN pip install pipenv && \
+    rm -rf /root/.cache/pip/*
+
+COPY Pipfile Pipfile.lock /app/
+COPY config /app/config
+COPY model /app/model
+COPY server /app/server
+COPY model_file /app/model_file
+
+RUN pipenv sync --clear
+
+# run api server
+CMD [ "pipenv", "run", "python", "server/main.py" ]

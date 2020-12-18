@@ -1,0 +1,28 @@
+application:
+  host: 0.0.0.0
+  port: 8080
+
+data:
+  url: ### PUT URL OF ZIP DATA FILE HERE
+  password: ### PUT PASSWORD OF ZIP DATA FILE HERE
+  split:
+    train:
+      path: data/
+      name: train_dataset.csv
+    test:
+      path: data/
+      name: test_dataset.csv
+    testSize: 0.2
+
+model:
+  input:
+    path: data/
+    name: data_redacted.tsv
+  output:
+    path: model_file/
+    name: model.bin
+  trainParams:
+    wordngrams: 1
+    lr: 0.5
+    epoch: 25
+  threshold: 0.5

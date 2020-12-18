@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 jupyter = "*"
 wordcloud = "*"
+pytest = "*"
 
 [packages]
 fasttext = "*"
@@ -16,6 +17,7 @@ pyyaml = "*"
 sklearn = "*"
 fastapi = "*"
 uvicorn = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

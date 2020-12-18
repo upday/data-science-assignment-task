@@ -18,9 +18,10 @@ There are two ways to run notebooks:
 
 ### Directly
 
-Install required developement dependencies
+Install required developement dependencies and set pythonpath
 ```
 pipenv sync -d --clear
+export PYTHONPATH=$(pwd)
 ```
 Run the notebook
 ```
@@ -39,9 +40,10 @@ You can access notebook server from localhost:8888
 
 ## Model Training and Evaluation Scripts
 
-To run the scripts, you need to install required dependencies
+To run the scripts, you need to install required dependencies and set pythonpath
 ```
 pipenv sync -d --clear
+export PYTHONPATH=$(pwd)
 ```
 All the configuration, path, variable as well as url and password to data file is stored `config\application.yaml` file. You can leave the default parameters, except data zipfile url and password.
 
@@ -81,6 +83,7 @@ The API is created by FastAPI library and provide very basic endpoint for other 
 Please note that you need to train a model before running the API. Put the data url and password inside application.yaml then run following commands
 ```
 pipenv sync --clear
+export PYTHONPATH=$(pwd)
 pipenv run python model/download_data.py
 pipenv run python model/train_model.py
 ```
@@ -110,4 +113,12 @@ curl --header "Content-Type: application/json" --data '{
 Response
 ```
 {"label":"fashion_beauty_lifestyle","probability":1.0000100135803223}
+```
+
+### Test
+There is one unittest for the API which test the response with good and bad requests, you need to install development dependencies
+```
+pipenv sync -d --clear
+export PYTHONPATH=$(pwd)
+pipenv run pytest
 ```

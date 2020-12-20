@@ -1,3 +1,18 @@
+# Guide to my solution
+
+My solution consists of two parts:
+1. The notebook `start_here.ipynb` contains a walk through the analysis and explains a lot of the reasoning behind decisions that I made on the way.
+2. There is also a python package `upday` along with a few unit tests and scripts. The scripts isolate the core functionality. More of the reasoning about this is in the notebook.
+
+Requirements for my solution are in the `requirements.txt` file. You can install all requirements into your virtual environment by running
+```
+pip install -r requirements.txt
+```
+I didn't make the package installable and I assume that the `upday` folder is in your python search path.
+Furthermore, I received data as a separate link. All scripts assume that the data file is at `./data/data_redacted.tsv`.
+
+If you want to play with the `predict.py` script, there is an example article file to get you started.
+
 # Assignment Task for Data Scientists
 
 ## Introduction

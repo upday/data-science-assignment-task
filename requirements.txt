@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+scikit-learn
+pytest
+tensorflow>=2.0.0
+docopt

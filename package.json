@@ -1,0 +1,41 @@
+{
+  "name": "upday-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "dev": "webpack --mode development --watch ./react/index.js --output ./django/frontend/static/frontend/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Huentelemu/upday-challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Huentelemu/upday-challenge/issues"
+  },
+  "homepage": "https://github.com/Huentelemu/upday-challenge#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-chartjs-2": "^2.11.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0"
+  }
+}

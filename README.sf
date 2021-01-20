@@ -1,3 +1,24 @@
+
+################################
+Additional submission instructions.
+################################
+
+The data is separate from the PR except for .pkl files.
+Please read below. It is stated also in PR.
+
+Sarah will receive these versions of the data folder:
+- `upday_data_task_no_large_embedding_data.tar.bz2`
+- `upday_data_task_data.tar.bz2`
+These can replace the `/data` folder (i.e. they also contain the `.pkl` files.
+
+One contains the full word embedding needed for `edaFeature.py` and `trainingModel.py`
+The other contains just the subset word vector `subset_wv.txt`. The Docker image uses this by default. 
+
+Sorry if this seems confusing but my intention here is just to simplify things for the team - i.e. the engineering aspect (flask/docker) can be assessed more quickly without the hassle of the large embedding, whilst for data science checks the larger file can be used. 
+It matches my own debugging process, both here and in general, using a smaller toy model to speed up production debugging. 
+
+
+
 Note I write in vim-tmux scripting over an REPL, see explanation in edaFeatures.py repeated at end of this file
 
 ###############################

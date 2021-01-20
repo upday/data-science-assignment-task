@@ -1,0 +1,28 @@
+########################################
+# Build
+########################################
+# e.g. ubuntu 20.04
+sudo apt install docker
+sudo apt install docker.io
+
+sudo service docker status
+### sudo service docker start # if required
+sudo docker build -t docker_upday_task .
+
+
+########################################
+# Run
+########################################
+# run a daemon
+sudo docker run -dt -p 5000:5000 docker_upday_task
+sudo dock ps -a #see open docker
+# sudo docker logs <name>
+# sudo docker stop <name>
+# sudo docker container kill <name>
+
+# send a single case by cmd line
+sudo curl -X POST --data '{"title":"Name", "text":"in news yesterday Trump president Biden White House","url": "www/test/url/here"}' http://127.0.0.1:5000/predict 
+
+# send several from file
+sudo curl -X POST -d @data/pseudo_test_data.json http://127.0.0.1:5000/predict
+

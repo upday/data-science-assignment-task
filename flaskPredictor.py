@@ -43,8 +43,48 @@ from funs import joinWordsFromURL
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
 
+a = 10
+
+# *** CONSTANTS - CHANGE THESE TO CHANGE MODEL
+useFullWordVec = 0 #for efficiency it does not use this but should perform better with it... toggle this as you like.  
+
+# *** File Paths
+    
+dataPrefix = 'data'
+    
+modelLoc = os.path.join(dataPrefix, 'trained_rf_model.pkl')
+modelVocabLoc = os.path.join(dataPrefix, 'model_vocab.pkl')
+    
+fullWordVecFileName = os.path.join(dataPrefix, "enwiki_20180420_100d.txt")
+    
+# In prediction I allow a shortcut to load a restricted word vector, to only the words in the training set. But note, this is an unneccessary restriction. A testing case could have many words SEMANTICALLY LIKE the words in training and we would get a similar vector after aggregation. So bear in mind the restriction is more for practical loading. 
+# It's worth experimenting with the two on hold-out set. I simplified the cross-validation not to restrict on hod out (partly because my subset function went wrong and kept reference, to fix.. :(
+# It's quite easy to have the model listening on a server on an ec2 with the larger model loaded into memory, we used that approach for years at So1 and it worked just fine, for our user load anyway...
+restrictedWordVecFileName = os.path.join(dataPrefix, "restricted_enwiki_20180420_100d.txt" )
+    
+    
+    # *** Read Data
+    
+    
+with open(modelLoc , 'rb') as file:
+    model = pickle.load(file)
+    
+with open(modelVocabLoc, 'rb') as file:
+    modelVocab = pickle.load(file)
+    
+if (useFullWordVec == 1):
+    print("loading full word vector, this takes time")
+    wordVec = KeyedVectors.load_word2vec_format(fullWordVecFileName, binary=False)
+    print("word vector loaded")
+else:
+    print("loading restricted word vector, this takes less time but may affect performance since words unseen in training can still be informative")
+    wordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
+    #subWordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
+    print("word vector loaded")
+
+
+@app.route('/predict', methods=['POST'])
 
 def predict():
 
@@ -81,42 +121,6 @@ def predict():
     
     ### ****** Setup
     
-    # *** CONSTANTS - CHANGE THESE TO CHANGE MODEL
-    useFullWordVec = 0 #for efficiency it does not use this but should perform better with it... toggle this as you like.
-    
-    # *** File Paths
-    
-    dataPrefix = 'data'
-    
-    modelLoc = os.path.join(dataPrefix, 'trained_rf_model.pkl')
-    modelVocabLoc = os.path.join(dataPrefix, 'model_vocab.pkl')
-    
-    fullWordVecFileName = os.path.join(dataPrefix, "enwiki_20180420_100d.txt")
-    
-    # In prediction I allow a shortcut to load a restricted word vector, to only the words in the training set. But note, this is an unneccessary restriction. A testing case could have many words SEMANTICALLY LIKE the words in training and we would get a similar vector after aggregation. So bear in mind the restriction is more for practical loading. 
-    # It's worth experimenting with the two on hold-out set. I simplified the cross-validation not to restrict on hod out (partly because my subset function went wrong and kept reference, to fix.. :(
-    # It's quite easy to have the model listening on a server on an ec2 with the larger model loaded into memory, we used that approach for years at So1 and it worked just fine, for our user load anyway...
-    restrictedWordVecFileName = os.path.join(dataPrefix, "restricted_enwiki_20180420_100d.txt" )
-    
-    
-    # *** Read Data
-    
-    
-    with open(modelLoc , 'rb') as file:
-            model = pickle.load(file)
-    
-    with open(modelVocabLoc, 'rb') as file:
-            modelVocab = pickle.load(file)
-    
-    if (useFullWordVec == 1):
-        print("loading full word vector, this takes time")
-        wordVec = KeyedVectors.load_word2vec_format(fullWordVecFileName, binary=False)
-        print("word vector loaded")
-    else:
-        print("loading restricted word vector, this takes less time but may affect performance since words unseen in training can still be informative")
-        wordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
-        #subWordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
-        print("word vector loaded")
     
     ###### *** Data Processing
     

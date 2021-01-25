@@ -41,6 +41,13 @@ from flask import Flask, request, jsonify
 from funs import getSentenceMeanWv
 from funs import joinWordsFromURL
 
+## own
+
+from simonwordvecs.models import SimpleWordVec
+from simonwordvecs.models import SimpleWordCounts
+from simonwordvecs.abstraction_functions import extract_gensim_word2vec #I relent and use underscore names for my package functions - inside the functions lowerCamel makes its ugly return.
+from simonwordvecs.projection_functions import get_sentence_mean_simplewv 
+
 app = Flask(__name__)
 
 
@@ -63,9 +70,9 @@ fullWordVecFileName = os.path.join(dataPrefix, "enwiki_20180420_100d.txt")
 # It's quite easy to have the model listening on a server on an ec2 with the larger model loaded into memory, we used that approach for years at So1 and it worked just fine, for our user load anyway...
 restrictedWordVecFileName = os.path.join(dataPrefix, "restricted_enwiki_20180420_100d.txt" )
     
-    
+vecIsPickle = False #if True expects vectors as pickles (reflecting change in trainingModel.py )
+
     # *** Read Data
-    
     
 with open(modelLoc , 'rb') as file:
     model = pickle.load(file)
@@ -75,14 +82,20 @@ with open(modelVocabLoc, 'rb') as file:
     
 if (useFullWordVec == 1):
     print("loading full word vector, this takes time")
-    wordVec = KeyedVectors.load_word2vec_format(fullWordVecFileName, binary=False)
-    print("word vector loaded")
+    if vecIsPickle:
+        simpleVec = pickle.load(fullWordVecFileName)
+    else:
+        wordVec = KeyedVectors.load_word2vec_format(fullWordVecFileName, binary=False)
+        simpleVec = extract_gensim_word2vec(wordVec)
 else:
     print("loading restricted word vector, this takes less time but may affect performance since words unseen in training can still be informative")
-    wordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
-    #subWordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
-    print("word vector loaded")
+    if vecIsPickle:
+        simpleVec = pickle.load(fullWordVecFileName)
+    else:
+        wordVec = KeyedVectors.load_word2vec_format(restrictedWordVecFileName, binary=False)
+        simpleVec = extract_gensim_word2vec(wordVec)
 
+print("word vector loaded")
 
 @app.route('/predict', methods=['POST'])
 
@@ -138,10 +151,13 @@ def predict():
     
     testCounts = testCountVectorizer.fit_transform(testData['text_title_url'])
     testWords = testCountVectorizer.get_feature_names()
+
+    simpleWordCounts = SimpleWordCounts(testCounts, testWords)
     
     # *** Sentence Emeddings Aggregation
     
-    testSentenceVecs = getSentenceMeanWv(testCounts, testWords, wordVec, verbose = True)
+    testSentenceVecs = get_sentence_mean_simplewv(simpleWordCounts, simpleVec, verbose=True)
+    #testSentenceVecs = getSentenceMeanWv(testCounts, testWords, wordVec, verbose = True)
     
     # *** predict and add to testData
     

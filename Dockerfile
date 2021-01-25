@@ -1,3 +1,7 @@
+# ACCESSING PRIVATE GIT REPO
+# https://medium.com/@erika_dike/installing-package-from-a-private-repo-in-your-docker-container-f45b1a4954a2
+
+
 # You can speed this up by removing the large word embedding enwiki_201880420_100d.txt if you make sure it is not set to use it.
 
 # thought about each of these... not sure..
@@ -5,6 +9,8 @@
 FROM frolvlad/alpine-miniconda3
 
 # very basic image, no WORKDIR etc..
+
+RUN apk add git
 
 
 COPY environment.yml .

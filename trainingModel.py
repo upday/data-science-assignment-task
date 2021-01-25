@@ -1,4 +1,4 @@
-##################################################################
+#################################################################
 #
 # Training Model
 # See edaFeatures.py
@@ -24,6 +24,8 @@ from urllib.request import urlopen
 import random 
 import pickle
 import re
+import gc
+import json
 
 ### ds
 
@@ -44,7 +46,12 @@ from gensim.models import Word2Vec
 from gensim.models import KeyedVectors
 from copy import deepcopy
 
-os.getcwd()
+from simonwordvecs.models import SimpleWordVec
+from simonwordvecs.models import SimpleWordCounts
+from simonwordvecs.abstraction_functions import extract_gensim_word2vec #I relent and use underscore names for my package functions - inside the functions lowerCamel makes its ugly return.
+from simonwordvecs.abstraction_functions import subset_wv 
+from simonwordvecs.projection_functions import get_sentence_mean_simplewv 
+
 
 #from upday_data_task.funs import getSentenceMeanWv
 #from upday_data_task.funs import joinWordsFromURL
@@ -52,54 +59,6 @@ os.getcwd()
 ### ***** Functions (I just add them here, since there are not many.
 
 
-def getSentenceMeanWv(sparseCounts, featureNames, wv, dim = 100, verbose = False):
-    # One of my favourite functions... csr_matrix().nonzero()
-    # In practice a great complexity reducer for much word count data etc that is highly sparse.
-    # This gives a nice way to go through all cases 
-    # https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.nonzero.html
-    # Returns a tuple of arrays (row,col) containing the indices of the non-zero elements of the matrix.
-    nonZeroCounts = csr_matrix(sparseCounts).nonzero()
-
-    sentVecs = []
-    currCount = 0 #count words per row..
-    currSentVec = np.zeros(dim,)
-    currRowIdx = 0
-
-    for locIdx in range(len(nonZeroCounts[0])):
-
-        if(verbose and (locIdx % 10000 == 0)):
-            print ("{} of {}".format(locIdx, len(nonZeroCounts[0])))
-
-        rowIdx = nonZeroCounts[0][locIdx]
-        colIdx = nonZeroCounts[1][locIdx]
-        count = sparseCounts[rowIdx,colIdx]
-        word = featureNames[colIdx]
-        if (word in wv.vocab):
-            currWordVec = wv[word]
-        else: #funny way of doing it but works... 
-            currWordVec = np.zeros(dim,)
-            count = 0
-        if (rowIdx == currRowIdx):
-            currCount += count
-            currSentVec += (currWordVec * count) #sum all occurrences of word
-        else:
-            currRowIdx += 1
-            # edge case: missing row in countVector - e.g. all zero counts...
-            # above the minum is 29 but let's do it anyway for principle
-            while currRowIdx < rowIdx:
-                sentVecs.append(np.zeros(dim,))
-                currRowIdx += 1
-
-            appendVec = currSentVec / currCount # average it.. e..g tfidf might be better - this is just the general idea..
-            sentVecs.append(appendVec) #oof don't ever forget to copy.. ;)
-            currSentVec = currWordVec * count #restart vec
-            currCount = count
-        continue 
-    appendVec = currSentVec / currCount
-    sentVecs.append(appendVec) #last vec..
-    resVec = np.vstack(sentVecs)
-    return resVec
-    
 # small helper for splitting the URL quickly
 # could do more here but this is robust enough for the given approach.
 def joinWordsFromURL(url):
@@ -137,36 +96,6 @@ def restrictW2v(w2v, restrictedWordSet):
     w2v.index2word = np.array(new_index2entity)
 
 
-def subsetW2v(w2v, subsetWordSet, dim = 100, verbose = False):
-    newVectors = []
-    newVocab = {}
-    newIndex2Entity = []
-    newIdx = 0
-
-    for i in range(len(subsetWordSet)):
-        if (verbose and (i % 10 == 0)):
-            print(i)
-        word = subsetWordSet[i]
-        if word in w2v.vocab:
-            vec = w2v[word]
-            vocab = w2v.vocab[word]
-            vocab.index = newIdx
-            newIndex2Entity.append(word)
-            newVocab[word] = vocab
-            newVectors.append(vec)
-            newIdx += 1
-
-    #ahh deep copy, this cause me a WOLRD of pain since it was not a deep copy :( 
-    # very strange things hapoen if this function is run repeatedly...
-    subsettedWv = deepcopy(w2v)
-    #subsettedWv = Word2Vec(size = dim)
-    subsettedWv.vocab = newVocab
-    subsettedWv.vectors = np.array(newVectors)
-    subsettedWv.index2entity = np.array(newIndex2Entity)
-    subsettedWv.index2word = np.array(newIndex2Entity)
-    return subsettedWv
-
-
 ### ****** Setup
 
 
@@ -195,6 +124,8 @@ huDataBkup = pd.read_csv(os.path.join(dataPrefix, 'upday_hungarian_data.tsv'), s
 
 # I wasted a lot of time trying to make subsets of this. Disappointed in myself and want to reskill to get back to speed here. It's good to be able to open up and manipulate these models.
 fullWordVecFileName = os.path.join(dataPrefix, "enwiki_20180420_100d.txt")
+#fullWordVecFileName = "~/Work/code/repos/coding_challenges/upday/upday_data_task/data/enwiki_20180420_100d.txt"
+#fullWordVecFileName = "~/Work/code/repos/coding_challenges/upday/upday_data_task/data/restricted_enwiki_20180420_100d.txt"
 restrictedWordVecFileName = os.path.join(dataPrefix, "restricted_enwiki_20180420_100d.txt" )
 
 
@@ -208,6 +139,11 @@ data = pd.read_csv(dataFile, sep = '\t')
 
 print("reading  word vector model") #fyi...
 wordVec = KeyedVectors.load_word2vec_format(fullWordVecFileName, binary=False)
+simpleWv = extract_gensim_word2vec(wordVec)
+
+# del wordVec
+# import gc
+# gc.collect()
 print("word vector model loaded")
 
 
@@ -265,10 +201,13 @@ ttuNoStopCountVectorizer = CountVectorizer(stop_words='english')
 ttuNoStopCounts = ttuNoStopCountVectorizer.fit_transform(data['text_title_url'])
 ttuNoStopWords = ttuNoStopCountVectorizer.get_feature_names()
 
+ttuNoStopSimpleWordCounts = SimpleWordCounts( ttuNoStopCounts, ttuNoStopCountVectorizer.get_feature_names() )
+
+
 # *** Sentence Emeddings Aggregation
 
-
-ttuNoStopSentenceVecs = getSentenceMeanWv(ttuNoStopCounts, ttuNoStopWords, wordVec, verbose = True)
+#ttuNoStopSentenceVecs = getSentenceMeanWv(ttuNoStopCounts, ttuNoStopWords, wordVec, verbose = True)
+ttuNoStopSentenceVecs = get_sentence_mean_simplewv(ttuNoStopSimpleWordCounts, simpleWv, verbose = True)
 
 # and that's all...
 
@@ -296,7 +235,7 @@ with open(modelVocabLoc, 'wb') as f:
 # Finally restrict the word vector so that we only need to load one that matches the training dimensions... new words will be thrown away... this is why we also save the modelVocab
 #  
 
-if (doRestrictWordVec):
+if doRestrictWordVec:
     #print ("restricting word vec, this is very slow")
     # this is very very slow...
     #restrictW2v(wordVec, ttuNoStopWords)
@@ -307,6 +246,11 @@ if (doRestrictWordVec):
     # 
     print("subsetting word vec - quicker")# a copy bug there so use wisely..
 
-    subsettedWv = subsetW2v(wordVec, ttuNoStopWords, verbose = True)
+    #subsettedWv = subsetW2v(wordVec, ttuNoStopWords, verbose = True)
+    subsettedWv = subset_wv( simpleWv, ttuNoStopWords, is_pruned = False)
 
-    subsettedWv.save_word2vec_format(restrictedWordVecFileName, binary=False)
+    #wvDict = subsettedWv._asdict()
+    #wvDict['word2index']
+
+    with open(restrictedWordVecFileName, 'w') as outfile:
+        pickle.dump(subsettedWv, outfile)

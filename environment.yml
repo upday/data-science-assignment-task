@@ -9,6 +9,6 @@ dependencies:
   - scipy
   - gensim
   - flask
-  #- pip
-  #   - example
- 
+  - pip
+  - pip:
+    - git+https://github.com/simonfuller79/simon_word_vecs.git

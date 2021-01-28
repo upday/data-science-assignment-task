@@ -1,0 +1,4 @@
+.DS_Store
+data/*.pickle
+data/data_redacted.tsv
+.ipynb_checkpoints/*
